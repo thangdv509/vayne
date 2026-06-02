@@ -21,9 +21,12 @@ TAU_INTERACTION = 0.02   # INT_ij > tau     → proxy↔proxy edge
 # Top-K high-risk proxies to run pairwise interaction analysis on
 TOP_K_PROXY = 5
 
+# Percentile used for adaptive Proxy Path Graph thresholds (paper: 75th)
+GRAPH_THRESHOLD_PERCENTILE = 50
+
 # ── Experiment budget ───────────────────────────────────────────────────────
 N_SAMPLES   = 30   # balanced: 50% protected / 50% non-protected
-MAX_WORKERS = 8    # parallel LLM threads
+MAX_WORKERS = 50   # parallel LLM threads
 
 # Threshold to classify a continuous score as a positive decision
 DECISION_THRESHOLD = 0.5

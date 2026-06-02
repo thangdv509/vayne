@@ -29,7 +29,7 @@ from tqdm import tqdm
 
 from src.config import (
     DECISION_THRESHOLD, MAX_WORKERS, TOP_K_PROXY, PRS_FILTER_THRESHOLD,
-    TAU_CAPACITY, TAU_USE, TAU_INTERACTION,
+    TAU_CAPACITY, TAU_USE, TAU_INTERACTION, GRAPH_THRESHOLD_PERCENTILE,
 )
 from src.llm_client import score_row
 from src.data_loader import load_dataset, get_feature_cols, get_all_feature_cols, is_protected, get_label
@@ -73,6 +73,14 @@ class VAYNEResult:
     risk_summary:     list[dict]          = field(default_factory=list)
     interaction_summary: list[dict]       = field(default_factory=list)
 
+    # ── Adaptive thresholds used for Proxy Path Graph ───────────────────────
+    tau_capacity:    float                     = 0.0
+    tau_use:         float                     = 0.0
+    tau_interaction: float                     = 0.0
+
+    # ── Proxy Path Graph object (NetworkX DiGraph) ──────────────────────────
+    proxy_graph_obj:  Optional[object]         = None
+
     # ── Baseline Fairness ───────────────────────────────────────────────────
     baseline_report:  Optional[FairnessReport] = None
     baseline_scores:  list[float]          = field(default_factory=list)
@@ -83,6 +91,38 @@ class VAYNEResult:
     # ── Raw sample metadata ─────────────────────────────────────────────────
     labels:           list[int]           = field(default_factory=list)
     is_protected_arr: list[bool]          = field(default_factory=list)
+
+
+def _adaptive_thresholds(
+    proxy_capacity:   dict[str, float],
+    proxy_use:        dict[str, float],
+    proxy_interaction: dict,
+) -> tuple[float, float, float]:
+    """
+    Compute adaptive percentile thresholds for the Proxy Path Graph edges,
+    as described in paper Section 4.4.
+
+    Falls back to config defaults when fewer than 4 values are available.
+    """
+    import numpy as np
+
+    pc_vals  = list(proxy_capacity.values())
+    pu_vals  = list(proxy_use.values())
+    int_vals = [v for v in proxy_interaction.values() if v > 0]
+
+    pct  = GRAPH_THRESHOLD_PERCENTILE
+    tau1 = float(np.percentile(pc_vals,  pct)) if len(pc_vals)  >= 4 else TAU_CAPACITY
+    tau2 = float(np.percentile(pu_vals,  pct)) if len(pu_vals)  >= 4 else TAU_USE
+    tau3 = float(np.percentile(int_vals, pct)) if len(int_vals) >= 4 else TAU_INTERACTION
+
+    # Guard against zero thresholds (edge case when all values are identical)
+    tau1 = max(tau1, 1e-6)
+    tau2 = max(tau2, 1e-6)
+    tau3 = max(tau3, 1e-6)
+
+    logger.info("Adaptive thresholds (%dth pct) — τ_PC=%.4f  τ_PU=%.4f  τ_INT=%.4f",
+                pct, tau1, tau2, tau3)
+    return tau1, tau2, tau3
 
 
 def _run_baseline_inference(
@@ -204,7 +244,8 @@ def run_experiment(
 
     # ── Step 4: Proxy Capacity (statistical, no LLM) ────────────────────────
     logger.info("Computing proxy capacity...")
-    result.proxy_capacity = compute_proxy_capacity(df, all_feat_cols, sensitive_col)
+    # Use feature_cols (excludes sensitive attr) to avoid I(A;A)=H(A) inflating PC
+    result.proxy_capacity = compute_proxy_capacity(df, feature_cols, sensitive_col)
 
     # ── Step 5: Single-feature ablations → Proxy Use ────────────────────────
     logger.info("Running single-feature ablations (%d features × %d samples)...",
@@ -234,20 +275,28 @@ def run_experiment(
     else:
         interaction = {}
 
-    # ── Step 8: Proxy Path Graph ─────────────────────────────────────────────
+    # ── Step 8: Proxy Path Graph (adaptive 75th-percentile thresholds) ──────
     logger.info("Building proxy path graph...")
+    tau1, tau2, tau3 = _adaptive_thresholds(
+        result.proxy_capacity, result.proxy_use, interaction
+    )
+    result.tau_capacity    = round(tau1, 6)
+    result.tau_use         = round(tau2, 6)
+    result.tau_interaction = round(tau3, 6)
+
     G = build_proxy_graph(
         sensitive_attr=sensitive_col,
         proxy_capacity=result.proxy_capacity,
         proxy_use=result.proxy_use,
         proxy_interaction=interaction,
-        tau_capacity=TAU_CAPACITY,
-        tau_use=TAU_USE,
-        tau_interaction=TAU_INTERACTION,
+        tau_capacity=tau1,
+        tau_use=tau2,
+        tau_interaction=tau3,
     )
     result.proxy_graph_dict = graph_to_dict(G)
     result.proxy_paths      = get_proxy_paths(G, sensitive_col)
     result.proxy_ascii      = graph_to_ascii(G, sensitive_col)
+    result.proxy_graph_obj  = G
 
     # ── Step 9: Baseline Fairness Metrics ────────────────────────────────────
     logger.info("Computing baseline fairness metrics...")

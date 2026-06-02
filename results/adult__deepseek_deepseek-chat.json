@@ -1,0 +1,455 @@
+{
+  "dataset": "adult",
+  "model": "deepseek/deepseek-chat",
+  "tau_capacity": 0.000519,
+  "tau_use": 0.08,
+  "tau_interaction": 0.02,
+  "proxy_capacity": {
+    "age": 0.0,
+    "workclass": 0.0,
+    "education": 0.007865898203285981,
+    "educational-num": 0.014535111914411925,
+    "marital-status": 0.0,
+    "occupation": 0.0,
+    "relationship": 0.0,
+    "race": 0.0,
+    "capital-gain": 0.035379301161697185,
+    "capital-loss": 0.001037000406896249,
+    "hours-per-week": 0.048610952091606485,
+    "native-country": 0.02873491488921487
+  },
+  "proxy_use": {
+    "age": 0.08109999999999999,
+    "workclass": 0.07915000000000001,
+    "education": 0.07415000000000001,
+    "educational-num": 0.08130000000000001,
+    "marital-status": 0.07604999999999999,
+    "occupation": 0.09555,
+    "relationship": 0.07565,
+    "race": 0.07385,
+    "capital-gain": 0.10325,
+    "capital-loss": 0.08084999999999999,
+    "hours-per-week": 0.08944999999999999,
+    "native-country": 0.06935
+  },
+  "proxy_risk": {
+    "age": 0.0,
+    "workclass": 0.0,
+    "education": 0.0005832563517736555,
+    "educational-num": 0.0011817045986416896,
+    "marital-status": 0.0,
+    "occupation": 0.0,
+    "relationship": 0.0,
+    "race": 0.0,
+    "capital-gain": 0.0036529128449452344,
+    "capital-loss": 8.384148289756173e-05,
+    "hours-per-week": 0.004348249664594199,
+    "native-country": 0.001992766347567051
+  },
+  "proxy_interaction": {
+    "('hours-per-week', 'capital-gain')": 0.0,
+    "('hours-per-week', 'native-country')": 0.0,
+    "('hours-per-week', 'educational-num')": 0.0,
+    "('hours-per-week', 'education')": 0.0,
+    "('capital-gain', 'native-country')": 0.0,
+    "('capital-gain', 'educational-num')": 0.0,
+    "('capital-gain', 'education')": 0.0,
+    "('native-country', 'educational-num')": 0.0,
+    "('native-country', 'education')": 0.0,
+    "('educational-num', 'education')": 0.0
+  },
+  "proxy_graph": {
+    "nodes": [
+      {
+        "id": "gender",
+        "node_type": "sensitive"
+      },
+      {
+        "id": "DECISION",
+        "node_type": "decision"
+      },
+      {
+        "id": "capital-loss",
+        "node_type": "proxy",
+        "pc": 0.001,
+        "pu": 0.0808
+      },
+      {
+        "id": "age",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.0811
+      },
+      {
+        "id": "education",
+        "node_type": "proxy",
+        "pc": 0.0079,
+        "pu": 0.0742
+      },
+      {
+        "id": "capital-gain",
+        "node_type": "proxy",
+        "pc": 0.0354,
+        "pu": 0.1032
+      },
+      {
+        "id": "educational-num",
+        "node_type": "proxy",
+        "pc": 0.0145,
+        "pu": 0.0813
+      },
+      {
+        "id": "occupation",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.0955
+      },
+      {
+        "id": "native-country",
+        "node_type": "proxy",
+        "pc": 0.0287,
+        "pu": 0.0693
+      },
+      {
+        "id": "hours-per-week",
+        "node_type": "proxy",
+        "pc": 0.0486,
+        "pu": 0.0894
+      }
+    ],
+    "edges": [
+      {
+        "source": "gender",
+        "target": "capital-loss",
+        "weight": 0.001,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "gender",
+        "target": "education",
+        "weight": 0.0079,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "gender",
+        "target": "capital-gain",
+        "weight": 0.0354,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "gender",
+        "target": "educational-num",
+        "weight": 0.0145,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "gender",
+        "target": "native-country",
+        "weight": 0.0287,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "gender",
+        "target": "hours-per-week",
+        "weight": 0.0486,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "capital-loss",
+        "target": "DECISION",
+        "weight": 0.0808,
+        "edge_type": "use"
+      },
+      {
+        "source": "age",
+        "target": "DECISION",
+        "weight": 0.0811,
+        "edge_type": "use"
+      },
+      {
+        "source": "capital-gain",
+        "target": "DECISION",
+        "weight": 0.1032,
+        "edge_type": "use"
+      },
+      {
+        "source": "educational-num",
+        "target": "DECISION",
+        "weight": 0.0813,
+        "edge_type": "use"
+      },
+      {
+        "source": "occupation",
+        "target": "DECISION",
+        "weight": 0.0955,
+        "edge_type": "use"
+      },
+      {
+        "source": "hours-per-week",
+        "target": "DECISION",
+        "weight": 0.0894,
+        "edge_type": "use"
+      }
+    ]
+  },
+  "proxy_paths": [
+    [
+      "gender",
+      "capital-loss",
+      "DECISION"
+    ],
+    [
+      "gender",
+      "capital-gain",
+      "DECISION"
+    ],
+    [
+      "gender",
+      "educational-num",
+      "DECISION"
+    ],
+    [
+      "gender",
+      "hours-per-week",
+      "DECISION"
+    ]
+  ],
+  "proxy_ascii": "gender\n  \u2500[capacity=0.001]\u2500\u25ba capital-loss\u2500[use=0.0808]\u2500\u25ba DECISION\n  \u2500[capacity=0.0354]\u2500\u25ba capital-gain\u2500[use=0.1032]\u2500\u25ba DECISION\n  \u2500[capacity=0.0145]\u2500\u25ba educational-num\u2500[use=0.0813]\u2500\u25ba DECISION\n  \u2500[capacity=0.0486]\u2500\u25ba hours-per-week\u2500[use=0.0894]\u2500\u25ba DECISION",
+  "risk_summary": [
+    {
+      "feature": "hours-per-week",
+      "proxy_capacity": 0.0486,
+      "proxy_use": 0.0894,
+      "proxy_risk": 0.0043
+    },
+    {
+      "feature": "capital-gain",
+      "proxy_capacity": 0.0354,
+      "proxy_use": 0.1032,
+      "proxy_risk": 0.0037
+    },
+    {
+      "feature": "native-country",
+      "proxy_capacity": 0.0287,
+      "proxy_use": 0.0693,
+      "proxy_risk": 0.002
+    },
+    {
+      "feature": "educational-num",
+      "proxy_capacity": 0.0145,
+      "proxy_use": 0.0813,
+      "proxy_risk": 0.0012
+    },
+    {
+      "feature": "education",
+      "proxy_capacity": 0.0079,
+      "proxy_use": 0.0742,
+      "proxy_risk": 0.0006
+    },
+    {
+      "feature": "capital-loss",
+      "proxy_capacity": 0.001,
+      "proxy_use": 0.0808,
+      "proxy_risk": 0.0001
+    },
+    {
+      "feature": "age",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.0811,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "workclass",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.0792,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "marital-status",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.076,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "occupation",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.0955,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "relationship",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.0756,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "race",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.0738,
+      "proxy_risk": 0.0
+    }
+  ],
+  "interaction_summary": [
+    {
+      "feature_i": "hours-per-week",
+      "feature_j": "capital-gain",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "hours-per-week",
+      "feature_j": "native-country",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "hours-per-week",
+      "feature_j": "educational-num",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "hours-per-week",
+      "feature_j": "education",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "capital-gain",
+      "feature_j": "native-country",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "capital-gain",
+      "feature_j": "educational-num",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "capital-gain",
+      "feature_j": "education",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "native-country",
+      "feature_j": "educational-num",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "native-country",
+      "feature_j": "education",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "educational-num",
+      "feature_j": "education",
+      "interaction": 0.0
+    }
+  ],
+  "baseline_fairness": {
+    "du": 0.074,
+    "sp": 0.064,
+    "eod": 0.03,
+    "pp": 0.034,
+    "abroca": 0.0,
+    "ti": 1.3831,
+    "mean_score": 0.1022,
+    "mean_score_protected": 0.0722,
+    "mean_score_non_protected": 0.1322,
+    "n_protected": 500,
+    "n_non_protected": 500
+  },
+  "mitigation_results": [
+    {
+      "strategy": "masking",
+      "fairness": {
+        "du": 0.1133,
+        "sp": 0.078,
+        "eod": 0.1384,
+        "pp": 0.3115,
+        "abroca": 0.0,
+        "ti": 1.2781,
+        "mean_score": 0.103,
+        "mean_score_protected": 0.0717,
+        "mean_score_non_protected": 0.1343,
+        "n_protected": 500,
+        "n_non_protected": 500
+      },
+      "improvement": {
+        "\u0394du": -0.0393,
+        "\u0394sp": -0.014,
+        "\u0394eod": -0.1084,
+        "\u0394pp": -0.2775,
+        "\u0394abroca": 0.0,
+        "\u0394ti": 0.105
+      }
+    },
+    {
+      "strategy": "abstraction",
+      "fairness": {
+        "du": 0.0762,
+        "sp": 0.068,
+        "eod": 0.084,
+        "pp": 0.0273,
+        "abroca": 0.0,
+        "ti": 1.6021,
+        "mean_score": 0.0853,
+        "mean_score_protected": 0.0577,
+        "mean_score_non_protected": 0.1129,
+        "n_protected": 500,
+        "n_non_protected": 500
+      },
+      "improvement": {
+        "\u0394du": -0.0022,
+        "\u0394sp": -0.004,
+        "\u0394eod": -0.054,
+        "\u0394pp": 0.0068,
+        "\u0394abroca": 0.0,
+        "\u0394ti": -0.219
+      }
+    },
+    {
+      "strategy": "debiasing",
+      "fairness": {
+        "du": 0.0754,
+        "sp": 0.08,
+        "eod": 0.0532,
+        "pp": 0.1373,
+        "abroca": 0.0,
+        "ti": 1.3443,
+        "mean_score": 0.1209,
+        "mean_score_protected": 0.0876,
+        "mean_score_non_protected": 0.1543,
+        "n_protected": 500,
+        "n_non_protected": 500
+      },
+      "improvement": {
+        "\u0394du": -0.0015,
+        "\u0394sp": -0.016,
+        "\u0394eod": -0.0231,
+        "\u0394pp": -0.1033,
+        "\u0394abroca": 0.0,
+        "\u0394ti": 0.0388
+      }
+    },
+    {
+      "strategy": "filtering",
+      "fairness": {
+        "du": 0.0755,
+        "sp": 0.066,
+        "eod": 0.0262,
+        "pp": 0.0817,
+        "abroca": 0.0,
+        "ti": 1.4285,
+        "mean_score": 0.1032,
+        "mean_score_protected": 0.0761,
+        "mean_score_non_protected": 0.1304,
+        "n_protected": 500,
+        "n_non_protected": 500
+      },
+      "improvement": {
+        "\u0394du": -0.0015,
+        "\u0394sp": -0.002,
+        "\u0394eod": 0.0038,
+        "\u0394pp": -0.0477,
+        "\u0394abroca": 0.0,
+        "\u0394ti": -0.0454
+      }
+    }
+  ]
+}
