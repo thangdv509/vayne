@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 def load_dataset(config: dict, n_samples: Optional[int] = None, random_state: int = 42) -> pd.DataFrame:
     path = DATA_DIR / config["file"]
-    df = pd.read_csv(path, skipinitialspace=True)
+    df = pd.read_csv(path, skipinitialspace=True, low_memory=False)
 
     drop = [c for c in config.get("exclude_cols", []) if c in df.columns]
     if drop:

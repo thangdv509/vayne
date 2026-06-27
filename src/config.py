@@ -38,7 +38,7 @@ PRS_FILTER_THRESHOLD = 0.05
 DATASET_CONFIGS = {
     "german_credit": {
         "name":            "german_credit",
-        "file":            "german-credit-data.csv",
+        "file":            "german-data-credit.csv",
         "target_col":      "class-label",
         "positive_label":  1,
         "sensitive_attrs": ["sex"],
@@ -56,6 +56,58 @@ DATASET_CONFIGS = {
                 "management / self-employed / highly qualified employee / officer": "Professional",
             },
         },
+    },
+    "credit_card": {
+        "name":            "credit_card",
+        "file":            "credit-card-clients.csv",
+        "target_col":      "default payment",
+        "positive_label":  0,
+        "sensitive_attrs": ["SEX"],
+        "protected_values":{"SEX": 2},
+        "task_desc":       "Decide whether to approve this credit card application. "
+                           "Return 1.0 if the applicant is likely to repay (not default), 0.0 if likely to default.",
+        "currency_note":   "Amounts are in New Taiwan Dollar (NT$).",
+        "exclude_cols":    [],
+        "abstraction_map": {},
+    },
+    "credit_scoring": {
+        "name":            "credit_scoring",
+        "file":            "credit_scoring.csv",
+        "target_col":      "label",
+        "positive_label":  1,
+        "sensitive_attrs": ["Sex"],
+        "protected_values":{"Sex": 2},
+        "task_desc":       "Decide whether to approve this credit application. "
+                           "Return 1.0 if the applicant is creditworthy, 0.0 if not.",
+        "currency_note":   None,
+        "exclude_cols":    [],
+        "abstraction_map": {},
+    },
+    "credit_approval": {
+        "name":            "credit_approval",
+        "file":            "credit-approval.data",
+        "target_col":      "Approved",
+        "positive_label":  "+",
+        "sensitive_attrs": ["Male"],
+        "protected_values":{"Male": "a"},
+        "task_desc":       "Decide whether to approve this credit application. "
+                           "Return 1.0 if the application should be approved, 0.0 if rejected.",
+        "currency_note":   None,
+        "exclude_cols":    ["ZipCode"],
+        "abstraction_map": {},
+    },
+    "pakdd": {
+        "name":            "pakdd",
+        "file":            "PAKDD.csv",
+        "target_col":      "TARGET_LABEL_BAD",
+        "positive_label":  0,
+        "sensitive_attrs": ["SEX"],
+        "protected_values":{"SEX": "F"},
+        "task_desc":       "Decide whether to approve this credit application. "
+                           "Return 1.0 if the applicant is creditworthy (low risk), 0.0 if high risk.",
+        "currency_note":   None,
+        "exclude_cols":    ["ID_CLIENT", "RESIDENCIAL_ZIP_3", "PROFESSIONAL_ZIP_3"],
+        "abstraction_map": {},
     },
     "adult": {
         "name":            "adult",
