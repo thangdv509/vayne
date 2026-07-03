@@ -15,9 +15,9 @@ For a black-box scorer `s(x) = p_yes(x) ∈ [0,1]` over a tabular record `x = (a
 
 | Quantity | Definition | Meaning |
 |---|---|---|
-| **DU** (Direct Unfairness) | `E_x[ |s(x) - s(x_{-A})| ]` | How much masking the protected attribute alone changes the decision. |
+| **DU** (Direct Unfairness) | `E_x[ abs(s(x) - s(x_{-A})) ]` | How much masking the protected attribute alone changes the decision. |
 | **PC_j** (Proxy Capacity) | `I(X_j; A)` (mutual information) | How much feature `j` statistically encodes the protected attribute. |
-| **PU_j** (Proxy Use) | `E_x[ |s(x) - s(x_{-j})| ]` | How much the LLM's decision actually changes when feature `j` is masked. |
+| **PU_j** (Proxy Use) | `E_x[ abs(s(x) - s(x_{-j})) ]` | How much the LLM's decision actually changes when feature `j` is masked. |
 | **PRS_j** (Proxy Risk Score) | `PC_j × PU_j` | High only when a feature both *encodes* protected info **and** the model *uses* it — the dangerous case. |
 
 `x_{-A}` / `x_{-j}` denote the record with the protected attribute / feature `j` replaced by the sentinel `UNKNOWN`, keeping the rest of the prompt structure intact.
@@ -132,7 +132,7 @@ python run_missing_strategies.py result_0107/*.json \
 Configured in `src/config.py::DATASET_CONFIGS`. Only the first three ship their source CSV in `data/`:
 
 | Key | Source file | Protected attribute |
-|---|---|---|---|
+|---|---|---|
 | `german_credit` | `german-data-credit.csv` | `sex` |
 | `credit_card` | `credit-card-clients.csv` | `SEX` |
 | `credit_approval` | `credit-approval.data` | `Male` |
@@ -161,5 +161,7 @@ A formal citation will be added once the paper is published. In the meantime, ci
             Ta Quoc, Tuan and Le Quy, Tai and Nguyen Long, Giang and Ban, Ha-Bang},
   year   = {2026},
   note   = {Manuscript in preparation}
-} -->
+}
 ```
+-->
+
