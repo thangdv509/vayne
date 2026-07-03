@@ -12,7 +12,7 @@ Flow per experiment (dataset × model):
   8. Compute Proxy Interaction
   9. Build Proxy Path Graph
  10. Compute baseline fairness metrics
- 11. For each of 4 mitigation strategies:
+ 11. For each mitigation strategy (VAYNE-native + external baselines):
        a. Apply strategy to each row
        b. Re-run LLM inference on modified prompts
        c. Compute post-mitigation fairness metrics
@@ -130,6 +130,8 @@ def _run_baseline_inference(
     config: dict,
     model: str,
     sensitive_col: str,
+    temperature: float = 0.1,
+    fs_examples_per_row: dict[int, list] | None = None,
 ) -> tuple[list[float], list[float]]:
     """
     Run baseline and sensitive-masked inference for all rows in parallel.
@@ -141,11 +143,14 @@ def _run_baseline_inference(
     masked_A  = [None] * n
 
     def _infer(i, row, mask_attr):
-        row_to_use = row.copy()
+        # astype(object) avoids "Invalid value 'UNKNOWN' for dtype 'int64'" on
+        # all-numeric rows (e.g. credit_card).
+        row_to_use = row.astype(object)
         if mask_attr:
             row_to_use[sensitive_col] = "UNKNOWN"
-        system, prompt = serialize(row_to_use, config)
-        return score_row(prompt, model, system)
+        fs = fs_examples_per_row.get(i) if fs_examples_per_row else None
+        system, prompt = serialize(row_to_use, config, fs_examples=fs)
+        return score_row(prompt, model, system, temperature=temperature)
 
     tasks = [(i, row, False) for i, row in df.iterrows()] + \
             [(i, row, True)  for i, row in df.iterrows()]
@@ -185,6 +190,8 @@ def _run_mitigation_inference(
     top_k_features: list[str],
     prs_threshold: float,
     masked_A_scores: list[float],
+    temperature: float = 0.1,
+    fs_examples_per_row: dict[int, list] | None = None,
 ) -> list[float]:
     """Apply one mitigation strategy to all rows and collect scores."""
     n = len(df)
@@ -194,10 +201,17 @@ def _run_mitigation_inference(
         mod_row, sys_suffix, excl_cols = apply_strategy(
             strategy, row, config, proxy_risk, top_k_features, prs_threshold
         )
+        # "few_shot_fair" carries its own balanced few-shot examples in
+        # sys_suffix — stacking our own k-shot block on top would duplicate
+        # few-shot content and isn't faithful to the external baseline.
+        fs = None if strategy == "few_shot_fair" else (
+            fs_examples_per_row.get(i) if fs_examples_per_row else None
+        )
         system, prompt = serialize(mod_row, config,
                                    exclude_cols=excl_cols,
-                                   system_suffix=sys_suffix)
-        return score_row(prompt, model, system)
+                                   system_suffix=sys_suffix,
+                                   fs_examples=fs)
+        return score_row(prompt, model, system, temperature=temperature)
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
         futures = {pool.submit(_infer, i, row): i for i, row in df.iterrows()}
@@ -215,11 +229,69 @@ def _run_mitigation_inference(
     return [v if v is not None else 0.5 for v in scores]
 
 
+def _build_fs_examples_per_row(
+    df: pd.DataFrame,
+    config: dict,
+    k_shot: int,
+) -> dict[int, list[tuple[pd.Series, int]]]:
+    """
+    Sample k_shot demonstration rows per evaluated row, drawn from the full
+    (unsampled) dataset so k_shot examples are actually available even when
+    n_samples is small. Excludes any pool row identical to the query row to
+    avoid showing the answer alongside the query.
+    """
+    full_df = load_dataset(config, n_samples=None)
+    full_str = full_df.astype(str)
+
+    fs_examples_per_row: dict[int, list[tuple[pd.Series, int]]] = {}
+    for i, row in df.iterrows():
+        mask = (full_str == row.astype(str)).all(axis=1)
+        pool = full_df[~mask]
+        k = min(k_shot, len(pool))
+        sample = pool.sample(n=k, random_state=i)
+        fs_examples_per_row[i] = [
+            (ex_row, get_label(ex_row, config)) for _, ex_row in sample.iterrows()
+        ]
+    return fs_examples_per_row
+
+
+def _select_few_shot_examples(
+    df: pd.DataFrame,
+    labels: list[int],
+    is_protected_arr: list[bool],
+    n_per_cell: int = 1,
+) -> list[dict]:
+    """
+    Select balanced few-shot examples: n_per_cell samples per
+    (protected/non-protected) × (positive/negative) cell.
+    Used by the "few_shot_fair" external baseline (Chhikara et al.).
+    """
+    examples = []
+    for prot_flag in [True, False]:
+        group_str = "protected" if prot_flag else "non-protected"
+        for label_val in [1, 0]:
+            idxs = [
+                i for i, (lbl, prot) in enumerate(zip(labels, is_protected_arr))
+                if lbl == label_val and prot == prot_flag
+            ]
+            if not idxs:
+                continue
+            for i in idxs[:n_per_cell]:
+                examples.append({
+                    "row":   df.iloc[i],
+                    "label": label_val,
+                    "group": group_str,
+                })
+    return examples
+
+
 def run_experiment(
     dataset_name: str,
     model: str,
     config: dict,
     n_samples: int,
+    temperature: float = 0.1,
+    k_shot: int = 0,
 ) -> VAYNEResult:
     result = VAYNEResult(dataset=dataset_name, model=model, n_samples=n_samples)
 
@@ -235,10 +307,16 @@ def run_experiment(
     result.labels           = [get_label(row, config) for _, row in df.iterrows()]
     result.is_protected_arr = [is_protected(row, config) for _, row in df.iterrows()]
 
+    fs_examples_per_row = None
+    if k_shot > 0:
+        logger.info("Sampling %d-shot demonstrations per row from full dataset...", k_shot)
+        fs_examples_per_row = _build_fs_examples_per_row(df, config, k_shot)
+
     # ── Step 2 & 3: Baseline + sensitive-masked inference ───────────────────
     logger.info("Running baseline inference...")
     baseline_scores, masked_A_scores = _run_baseline_inference(
-        df, config, model, sensitive_col
+        df, config, model, sensitive_col,
+        temperature=temperature, fs_examples_per_row=fs_examples_per_row,
     )
     result.baseline_scores = baseline_scores
 
@@ -251,7 +329,8 @@ def run_experiment(
     logger.info("Running single-feature ablations (%d features × %d samples)...",
                 len(feature_cols), len(df))
     single_masked = compute_single_ablations(
-        df, config, model, feature_cols, baseline_scores, MAX_WORKERS
+        df, config, model, feature_cols, baseline_scores, MAX_WORKERS,
+        temperature=temperature, fs_examples_per_row=fs_examples_per_row,
     )
     result.proxy_use = compute_proxy_use(baseline_scores, single_masked)
 
@@ -266,7 +345,8 @@ def run_experiment(
     if len(top_k) >= 2:
         logger.info("Running pairwise ablations for top-%d features...", len(top_k))
         pairwise_masked = compute_pairwise_ablations(
-            df, config, model, top_k, baseline_scores, MAX_WORKERS
+            df, config, model, top_k, baseline_scores, MAX_WORKERS,
+            temperature=temperature, fs_examples_per_row=fs_examples_per_row,
         )
         pairwise_pu        = compute_pairwise_proxy_use(baseline_scores, pairwise_masked)
         interaction        = compute_proxy_interaction(result.proxy_use, pairwise_pu)
@@ -308,13 +388,21 @@ def run_experiment(
         threshold=DECISION_THRESHOLD,
     )
 
-    # ── Step 10: Mitigation Strategies ──────────────────────────────────────
+    # ── Step 10: Mitigation Strategies (VAYNE + external baselines) ─────────
+    few_shot_examples = _select_few_shot_examples(
+        df, result.labels, result.is_protected_arr, n_per_cell=1
+    )
+    logger.info("Few-shot examples for 'few_shot_fair' baseline: %d total",
+                len(few_shot_examples))
+    mitigation_config = dict(config, _few_shot_examples=few_shot_examples)
+
     for strategy in STRATEGY_NAMES:
         logger.info("Applying mitigation strategy: %s", strategy)
         mit_scores = _run_mitigation_inference(
-            df, config, model, strategy,
+            df, mitigation_config, model, strategy,
             result.proxy_risk, top_k, PRS_FILTER_THRESHOLD,
             masked_A_scores,
+            temperature=temperature, fs_examples_per_row=fs_examples_per_row,
         )
         # Re-run sensitive-masked inference on mitigated prompts for DU measure
         # (use masked_A_scores from baseline as approximation to save LLM calls)

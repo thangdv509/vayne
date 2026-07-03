@@ -26,15 +26,20 @@ def _score_masked(
     config: dict,
     model: str,
     mask_cols: list[str],
+    temperature: float = 0.1,
+    fs_examples: list[tuple[pd.Series, int]] | None = None,
 ) -> Optional[float]:
     """Score a row with mask_cols set to 'UNKNOWN'."""
-    masked_row = row.copy()
+    # astype(object) avoids "Invalid value 'UNKNOWN' for dtype 'int64'" when the
+    # row's columns are all-numeric (e.g. credit_card) and would otherwise stay
+    # a homogeneously-typed Series that rejects string assignment.
+    masked_row = row.astype(object)
     for col in mask_cols:
         if col in masked_row.index:
             masked_row[col] = "UNKNOWN"
 
-    system, prompt = serialize(masked_row, config)
-    return score_row(prompt, model, system)
+    system, prompt = serialize(masked_row, config, fs_examples=fs_examples)
+    return score_row(prompt, model, system, temperature=temperature)
 
 
 def compute_single_ablations(
@@ -44,6 +49,8 @@ def compute_single_ablations(
     feature_cols: list[str],
     baseline_scores: list[float],
     max_workers: int = 8,
+    temperature: float = 0.1,
+    fs_examples_per_row: dict[int, list[tuple[pd.Series, int]]] | None = None,
 ) -> dict[str, list[float]]:
     """
     For each feature j, compute s(x_{-j}) for all rows.
@@ -57,7 +64,9 @@ def compute_single_ablations(
 
     def _run(args):
         i, row, feat = args
-        return feat, i, _score_masked(row, config, model, [feat])
+        fs = fs_examples_per_row.get(i) if fs_examples_per_row else None
+        return feat, i, _score_masked(row, config, model, [feat],
+                                       temperature=temperature, fs_examples=fs)
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = {pool.submit(_run, t): t for t in tasks}
@@ -88,6 +97,8 @@ def compute_pairwise_ablations(
     top_features: list[str],
     baseline_scores: list[float],
     max_workers: int = 8,
+    temperature: float = 0.1,
+    fs_examples_per_row: dict[int, list[tuple[pd.Series, int]]] | None = None,
 ) -> dict[tuple[str, str], list[float]]:
     """
     For each pair (i, j) in top_features, compute s(x_{-i,-j}) for all rows.
@@ -105,7 +116,9 @@ def compute_pairwise_ablations(
 
     def _run(args):
         row_idx, row, pair = args
-        return pair, row_idx, _score_masked(row, config, model, list(pair))
+        fs = fs_examples_per_row.get(row_idx) if fs_examples_per_row else None
+        return pair, row_idx, _score_masked(row, config, model, list(pair),
+                                             temperature=temperature, fs_examples=fs)
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = {pool.submit(_run, t): t for t in tasks}

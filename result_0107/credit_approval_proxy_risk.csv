@@ -1,0 +1,14 @@
+feature,proxy_capacity,proxy_use,proxy_risk
+Employed,0.106,0.3795,0.0402
+EducationLevel,0.0414,0.3646,0.0151
+Age,0.0299,0.3608,0.0108
+YearsEmployed,0.026,0.3681,0.0096
+Debt,0.03,0.2852,0.0086
+CreditScore,0.0225,0.3359,0.0076
+BankCustomer,0.019,0.3699,0.007
+Married,0.0,0.3587,0.0
+Ethnicity,0.0,0.4064,0.0
+PriorDefault,0.0,0.3676,0.0
+DriversLicense,0.0,0.442,0.0
+Citizen,0.0,0.3865,0.0
+Income,0.0,0.4035,0.0

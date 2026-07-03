@@ -52,6 +52,10 @@ def generate_full(
                 messages=messages,
                 max_tokens=max_tokens,
                 temperature=temperature,
+                # OpenRouter unified reasoning control — disables chain-of-thought
+                # on models that support toggling it. Silently ignored by models/
+                # providers that don't support the field.
+                extra_body={"reasoning": {"enabled": False, "exclude": True}},
             )
             msg = resp.choices[0].message
             content = msg.content or ""
@@ -120,12 +124,16 @@ def extract_p_yes(text: str) -> Optional[float]:
     return None
 
 
-def score_row(prompt: str, model: str, system_prompt: str = "") -> Optional[float]:
+def score_row(prompt: str, model: str, system_prompt: str = "",
+              temperature: float = 0.1) -> Optional[float]:
     """Run one LLM inference and return p_yes."""
     messages = []
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
     messages.append({"role": "user", "content": prompt})
 
-    resp = generate_full(messages, model, max_tokens=128, temperature=0.1)
+    # 1024 leaves headroom for a <think> block on reasoning models that ignore
+    # the disable-reasoning request, so the final {"p_yes": ...} still lands
+    # within the budget instead of getting truncated mid-thought.
+    resp = generate_full(messages, model, max_tokens=1024, temperature=temperature)
     return extract_p_yes(resp.full_text)

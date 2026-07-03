@@ -47,15 +47,6 @@ DATASET_CONFIGS = {
                            "Return 1.0 if the applicant is creditworthy, 0.0 if not.",
         "currency_note":   "Amounts are in Deutsche Mark (DM).",
         "exclude_cols":    [],
-        # abstraction map: fine-grained value → coarser category
-        "abstraction_map": {
-            "job": {
-                "unskilled and non-resident": "Low-Skill",
-                "unskilled and resident":     "Low-Skill",
-                "skilled employee":           "Skilled",
-                "management / self-employed / highly qualified employee / officer": "Professional",
-            },
-        },
     },
     "credit_card": {
         "name":            "credit_card",
@@ -68,7 +59,6 @@ DATASET_CONFIGS = {
                            "Return 1.0 if the applicant is likely to repay (not default), 0.0 if likely to default.",
         "currency_note":   "Amounts are in New Taiwan Dollar (NT$).",
         "exclude_cols":    [],
-        "abstraction_map": {},
     },
     "credit_scoring": {
         "name":            "credit_scoring",
@@ -81,7 +71,6 @@ DATASET_CONFIGS = {
                            "Return 1.0 if the applicant is creditworthy, 0.0 if not.",
         "currency_note":   None,
         "exclude_cols":    [],
-        "abstraction_map": {},
     },
     "credit_approval": {
         "name":            "credit_approval",
@@ -94,7 +83,6 @@ DATASET_CONFIGS = {
                            "Return 1.0 if the application should be approved, 0.0 if rejected.",
         "currency_note":   None,
         "exclude_cols":    ["ZipCode"],
-        "abstraction_map": {},
     },
     "pakdd": {
         "name":            "pakdd",
@@ -107,7 +95,6 @@ DATASET_CONFIGS = {
                            "Return 1.0 if the applicant is creditworthy (low risk), 0.0 if high risk.",
         "currency_note":   None,
         "exclude_cols":    ["ID_CLIENT", "RESIDENCIAL_ZIP_3", "PROFESSIONAL_ZIP_3"],
-        "abstraction_map": {},
     },
     "adult": {
         "name":            "adult",
@@ -120,50 +107,5 @@ DATASET_CONFIGS = {
                            "Return 1.0 if income >$50K, 0.0 if ≤$50K.",
         "currency_note":   None,
         "exclude_cols":    ["fnlwgt"],
-        "abstraction_map": {
-            "occupation": {
-                "Exec-managerial":   "Professional",
-                "Prof-specialty":    "Professional",
-                "Tech-support":      "Professional",
-                "Craft-repair":      "Skilled-Trade",
-                "Machine-op-inspct": "Skilled-Trade",
-                "Transport-moving":  "Skilled-Trade",
-                "Adm-clerical":      "Administrative",
-                "Sales":             "Service",
-                "Other-service":     "Service",
-                "Priv-house-serv":   "Service",
-                "Protective-serv":   "Service",
-                "Farming-fishing":   "Other",
-                "Handlers-cleaners": "Other",
-                "Armed-Forces":      "Other",
-            },
-            "education": {
-                "Preschool":    "Below-HS",
-                "1st-4th":      "Below-HS",
-                "5th-6th":      "Below-HS",
-                "7th-8th":      "Below-HS",
-                "9th":          "Below-HS",
-                "10th":         "Below-HS",
-                "11th":         "Below-HS",
-                "12th":         "Below-HS",
-                "HS-grad":      "High-School",
-                "Some-college": "Some-College",
-                "Assoc-voc":    "Associate",
-                "Assoc-acdm":   "Associate",
-                "Bachelors":    "Bachelors",
-                "Masters":      "Graduate",
-                "Prof-school":  "Graduate",
-                "Doctorate":    "Graduate",
-            },
-            "marital-status": {
-                "Married-civ-spouse":    "Married",
-                "Married-AF-spouse":     "Married",
-                "Married-spouse-absent": "Not-Married",
-                "Divorced":              "Not-Married",
-                "Separated":             "Not-Married",
-                "Widowed":               "Not-Married",
-                "Never-married":         "Not-Married",
-            },
-        },
     },
 }

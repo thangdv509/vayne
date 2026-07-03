@@ -1,0 +1,468 @@
+{
+  "dataset": "credit_approval",
+  "model": "deepseek/deepseek-v4-flash",
+  "n_samples": 100,
+  "tau_capacity": 0.018993,
+  "tau_use": 0.3681,
+  "tau_interaction": 0.02,
+  "proxy_capacity": {
+    "Age": 0.029862683250698296,
+    "Debt": 0.03004844193645706,
+    "Married": 0.0,
+    "BankCustomer": 0.018992886380902352,
+    "EducationLevel": 0.041361212499228195,
+    "Ethnicity": 0.0,
+    "YearsEmployed": 0.026037258675273955,
+    "PriorDefault": 0.0,
+    "Employed": 0.10603610296823618,
+    "CreditScore": 0.0225210249090404,
+    "DriversLicense": 0.0,
+    "Citizen": 0.0,
+    "Income": 0.0
+  },
+  "proxy_use": {
+    "Age": 0.3608,
+    "Debt": 0.2852,
+    "Married": 0.3587,
+    "BankCustomer": 0.3699,
+    "EducationLevel": 0.3646000000000001,
+    "Ethnicity": 0.40635000000000004,
+    "YearsEmployed": 0.36810000000000004,
+    "PriorDefault": 0.3676,
+    "Employed": 0.37945,
+    "CreditScore": 0.33590000000000003,
+    "DriversLicense": 0.44195000000000007,
+    "Citizen": 0.3865,
+    "Income": 0.4035000000000001
+  },
+  "proxy_risk": {
+    "Age": 0.010774456116851946,
+    "Debt": 0.008569815640277553,
+    "Married": 0.0,
+    "BankCustomer": 0.00702546867229578,
+    "EducationLevel": 0.015080298077218604,
+    "Ethnicity": 0.0,
+    "YearsEmployed": 0.009584314918368343,
+    "PriorDefault": 0.0,
+    "Employed": 0.04023539927129722,
+    "CreditScore": 0.007564812266946671,
+    "DriversLicense": 0.0,
+    "Citizen": 0.0,
+    "Income": 0.0
+  },
+  "proxy_interaction": {
+    "('Employed', 'EducationLevel')": 0.0,
+    "('Employed', 'Age')": 0.0,
+    "('Employed', 'YearsEmployed')": 0.0,
+    "('Employed', 'Debt')": 0.0,
+    "('EducationLevel', 'Age')": 0.0,
+    "('EducationLevel', 'YearsEmployed')": 0.0,
+    "('EducationLevel', 'Debt')": 0.0,
+    "('Age', 'YearsEmployed')": 0.0,
+    "('Age', 'Debt')": 0.0,
+    "('YearsEmployed', 'Debt')": 0.0
+  },
+  "proxy_graph": {
+    "nodes": [
+      {
+        "id": "Male",
+        "node_type": "sensitive"
+      },
+      {
+        "id": "DECISION",
+        "node_type": "decision"
+      },
+      {
+        "id": "Ethnicity",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.4064
+      },
+      {
+        "id": "Employed",
+        "node_type": "proxy",
+        "pc": 0.106,
+        "pu": 0.3795
+      },
+      {
+        "id": "Age",
+        "node_type": "proxy",
+        "pc": 0.0299,
+        "pu": 0.3608
+      },
+      {
+        "id": "EducationLevel",
+        "node_type": "proxy",
+        "pc": 0.0414,
+        "pu": 0.3646
+      },
+      {
+        "id": "BankCustomer",
+        "node_type": "proxy",
+        "pc": 0.019,
+        "pu": 0.3699
+      },
+      {
+        "id": "CreditScore",
+        "node_type": "proxy",
+        "pc": 0.0225,
+        "pu": 0.3359
+      },
+      {
+        "id": "Income",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.4035
+      },
+      {
+        "id": "YearsEmployed",
+        "node_type": "proxy",
+        "pc": 0.026,
+        "pu": 0.3681
+      },
+      {
+        "id": "Debt",
+        "node_type": "proxy",
+        "pc": 0.03,
+        "pu": 0.2852
+      },
+      {
+        "id": "Citizen",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.3865
+      },
+      {
+        "id": "DriversLicense",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.442
+      }
+    ],
+    "edges": [
+      {
+        "source": "Male",
+        "target": "Employed",
+        "weight": 0.106,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "Male",
+        "target": "Age",
+        "weight": 0.0299,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "Male",
+        "target": "EducationLevel",
+        "weight": 0.0414,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "Male",
+        "target": "CreditScore",
+        "weight": 0.0225,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "Male",
+        "target": "YearsEmployed",
+        "weight": 0.026,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "Male",
+        "target": "Debt",
+        "weight": 0.03,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "Ethnicity",
+        "target": "DECISION",
+        "weight": 0.4064,
+        "edge_type": "use"
+      },
+      {
+        "source": "Employed",
+        "target": "DECISION",
+        "weight": 0.3795,
+        "edge_type": "use"
+      },
+      {
+        "source": "BankCustomer",
+        "target": "DECISION",
+        "weight": 0.3699,
+        "edge_type": "use"
+      },
+      {
+        "source": "Income",
+        "target": "DECISION",
+        "weight": 0.4035,
+        "edge_type": "use"
+      },
+      {
+        "source": "Citizen",
+        "target": "DECISION",
+        "weight": 0.3865,
+        "edge_type": "use"
+      },
+      {
+        "source": "DriversLicense",
+        "target": "DECISION",
+        "weight": 0.442,
+        "edge_type": "use"
+      }
+    ]
+  },
+  "proxy_paths": [
+    [
+      "Male",
+      "Employed",
+      "DECISION"
+    ]
+  ],
+  "proxy_ascii": "Male\n  \u2500[capacity=0.106]\u2500\u25ba Employed\u2500[use=0.3795]\u2500\u25ba DECISION",
+  "risk_summary": [
+    {
+      "feature": "Employed",
+      "proxy_capacity": 0.106,
+      "proxy_use": 0.3795,
+      "proxy_risk": 0.0402
+    },
+    {
+      "feature": "EducationLevel",
+      "proxy_capacity": 0.0414,
+      "proxy_use": 0.3646,
+      "proxy_risk": 0.0151
+    },
+    {
+      "feature": "Age",
+      "proxy_capacity": 0.0299,
+      "proxy_use": 0.3608,
+      "proxy_risk": 0.0108
+    },
+    {
+      "feature": "YearsEmployed",
+      "proxy_capacity": 0.026,
+      "proxy_use": 0.3681,
+      "proxy_risk": 0.0096
+    },
+    {
+      "feature": "Debt",
+      "proxy_capacity": 0.03,
+      "proxy_use": 0.2852,
+      "proxy_risk": 0.0086
+    },
+    {
+      "feature": "CreditScore",
+      "proxy_capacity": 0.0225,
+      "proxy_use": 0.3359,
+      "proxy_risk": 0.0076
+    },
+    {
+      "feature": "BankCustomer",
+      "proxy_capacity": 0.019,
+      "proxy_use": 0.3699,
+      "proxy_risk": 0.007
+    },
+    {
+      "feature": "Married",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.3587,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "Ethnicity",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.4064,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PriorDefault",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.3676,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "DriversLicense",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.442,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "Citizen",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.3865,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "Income",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.4035,
+      "proxy_risk": 0.0
+    }
+  ],
+  "interaction_summary": [
+    {
+      "feature_i": "Employed",
+      "feature_j": "EducationLevel",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "Employed",
+      "feature_j": "Age",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "Employed",
+      "feature_j": "YearsEmployed",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "Employed",
+      "feature_j": "Debt",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "EducationLevel",
+      "feature_j": "Age",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "EducationLevel",
+      "feature_j": "YearsEmployed",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "EducationLevel",
+      "feature_j": "Debt",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "Age",
+      "feature_j": "YearsEmployed",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "Age",
+      "feature_j": "Debt",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "YearsEmployed",
+      "feature_j": "Debt",
+      "interaction": 0.0
+    }
+  ],
+  "baseline_fairness": {
+    "du": 0.3501,
+    "sp": 0.06,
+    "eod": 0.2735,
+    "pp": 0.1957,
+    "abroca": 0.0,
+    "ti": 0.4989,
+    "mean_score": 0.4354,
+    "mean_score_protected": 0.466,
+    "mean_score_non_protected": 0.4048,
+    "n_protected": 50,
+    "n_non_protected": 50
+  },
+  "mitigation_results": [
+    {
+      "strategy": "masking",
+      "fairness": {
+        "du": 0.2949,
+        "sp": 0.1,
+        "eod": 0.2021,
+        "pp": 0.14,
+        "abroca": 0.0,
+        "ti": 0.4504,
+        "mean_score": 0.442,
+        "mean_score_protected": 0.48,
+        "mean_score_non_protected": 0.404,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": 0.0552,
+        "\u0394sp": -0.04,
+        "\u0394eod": 0.0714,
+        "\u0394pp": 0.0557,
+        "\u0394abroca": 0.0,
+        "\u0394ti": 0.0485
+      }
+    },
+    {
+      "strategy": "filtering",
+      "fairness": {
+        "du": 0.3433,
+        "sp": 0.1,
+        "eod": 0.2963,
+        "pp": 0.1535,
+        "abroca": 0.0,
+        "ti": 0.4853,
+        "mean_score": 0.443,
+        "mean_score_protected": 0.482,
+        "mean_score_non_protected": 0.404,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": 0.0069,
+        "\u0394sp": -0.04,
+        "\u0394eod": -0.0228,
+        "\u0394pp": 0.0421,
+        "\u0394abroca": 0.0,
+        "\u0394ti": 0.0136
+      }
+    },
+    {
+      "strategy": "fair_prompt",
+      "fairness": {
+        "du": 0.051,
+        "sp": 0.08,
+        "eod": 0.2524,
+        "pp": 0.0995,
+        "abroca": 0.0,
+        "ti": 0.5455,
+        "mean_score": 0.337,
+        "mean_score_protected": 0.302,
+        "mean_score_non_protected": 0.372,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": 0.2991,
+        "\u0394sp": -0.02,
+        "\u0394eod": 0.0211,
+        "\u0394pp": 0.0962,
+        "\u0394abroca": 0.0,
+        "\u0394ti": -0.0466
+      }
+    },
+    {
+      "strategy": "few_shot_fair",
+      "fairness": {
+        "du": 0.324,
+        "sp": 0.04,
+        "eod": 0.0657,
+        "pp": 0.0571,
+        "abroca": 0.0,
+        "ti": 2.1202,
+        "mean_score": 0.12,
+        "mean_score_protected": 0.14,
+        "mean_score_non_protected": 0.1,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": 0.0261,
+        "\u0394sp": 0.02,
+        "\u0394eod": 0.2078,
+        "\u0394pp": 0.1386,
+        "\u0394abroca": 0.0,
+        "\u0394ti": -1.6213
+      }
+    }
+  ]
+}

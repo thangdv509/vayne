@@ -1,0 +1,607 @@
+{
+  "dataset": "credit_card",
+  "model": "deepseek/deepseek-v4-flash",
+  "n_samples": 100,
+  "tau_capacity": 1e-06,
+  "tau_use": 0.056,
+  "tau_interaction": 0.02,
+  "proxy_capacity": {
+    "LIMIT_BAL": 0.010639351027366795,
+    "EDUCATION": 0.026404891042906886,
+    "MARRIAGE": 0.016494759507774903,
+    "AGE": 0.0,
+    "PAY_0": 0.0,
+    "PAY_2": 0.0,
+    "PAY_3": 0.0,
+    "PAY_4": 0.0,
+    "PAY_5": 0.033381775269790914,
+    "PAY_6": 0.0,
+    "BILL_AMT1": 0.0,
+    "BILL_AMT2": 0.0,
+    "BILL_AMT3": 0.0,
+    "BILL_AMT4": 0.0,
+    "BILL_AMT5": 0.0,
+    "BILL_AMT6": 0.0,
+    "PAY_AMT1": 0.1358104854485016,
+    "PAY_AMT2": 0.0,
+    "PAY_AMT3": 0.0,
+    "PAY_AMT4": 0.0,
+    "PAY_AMT5": 0.0,
+    "PAY_AMT6": 0.06225082288883854
+  },
+  "proxy_use": {
+    "LIMIT_BAL": 0.048,
+    "EDUCATION": 0.066,
+    "MARRIAGE": 0.032,
+    "AGE": 0.025,
+    "PAY_0": 0.05600000000000001,
+    "PAY_2": 0.05600000000000001,
+    "PAY_3": 0.08,
+    "PAY_4": 0.048,
+    "PAY_5": 0.026000000000000006,
+    "PAY_6": 0.057,
+    "BILL_AMT1": 0.04,
+    "BILL_AMT2": 0.040999999999999995,
+    "BILL_AMT3": 0.064,
+    "BILL_AMT4": 0.055999999999999994,
+    "BILL_AMT5": 0.048,
+    "BILL_AMT6": 0.055999999999999994,
+    "PAY_AMT1": 0.05600000000000001,
+    "PAY_AMT2": 0.048,
+    "PAY_AMT3": 0.08000000000000002,
+    "PAY_AMT4": 0.08000000000000002,
+    "PAY_AMT5": 0.05600000000000001,
+    "PAY_AMT6": 0.07200000000000001
+  },
+  "proxy_risk": {
+    "LIMIT_BAL": 0.0005106888493136061,
+    "EDUCATION": 0.0017427228088318545,
+    "MARRIAGE": 0.0005278323042487969,
+    "AGE": 0.0,
+    "PAY_0": 0.0,
+    "PAY_2": 0.0,
+    "PAY_3": 0.0,
+    "PAY_4": 0.0,
+    "PAY_5": 0.000867926157014564,
+    "PAY_6": 0.0,
+    "BILL_AMT1": 0.0,
+    "BILL_AMT2": 0.0,
+    "BILL_AMT3": 0.0,
+    "BILL_AMT4": 0.0,
+    "BILL_AMT5": 0.0,
+    "BILL_AMT6": 0.0,
+    "PAY_AMT1": 0.007605387185116091,
+    "PAY_AMT2": 0.0,
+    "PAY_AMT3": 0.0,
+    "PAY_AMT4": 0.0,
+    "PAY_AMT5": 0.0,
+    "PAY_AMT6": 0.004482059247996375
+  },
+  "proxy_interaction": {
+    "('PAY_AMT1', 'PAY_AMT6')": 0.0,
+    "('PAY_AMT1', 'EDUCATION')": 0.0,
+    "('PAY_AMT1', 'PAY_5')": 0.0,
+    "('PAY_AMT1', 'MARRIAGE')": 0.0,
+    "('PAY_AMT6', 'EDUCATION')": 0.0,
+    "('PAY_AMT6', 'PAY_5')": 0.0,
+    "('PAY_AMT6', 'MARRIAGE')": 0.0,
+    "('EDUCATION', 'PAY_5')": 0.0,
+    "('EDUCATION', 'MARRIAGE')": 0.0,
+    "('PAY_5', 'MARRIAGE')": 0.0
+  },
+  "proxy_graph": {
+    "nodes": [
+      {
+        "id": "SEX",
+        "node_type": "sensitive"
+      },
+      {
+        "id": "DECISION",
+        "node_type": "decision"
+      },
+      {
+        "id": "PAY_AMT5",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.056
+      },
+      {
+        "id": "EDUCATION",
+        "node_type": "proxy",
+        "pc": 0.0264,
+        "pu": 0.066
+      },
+      {
+        "id": "PAY_AMT1",
+        "node_type": "proxy",
+        "pc": 0.1358,
+        "pu": 0.056
+      },
+      {
+        "id": "PAY_AMT6",
+        "node_type": "proxy",
+        "pc": 0.0623,
+        "pu": 0.072
+      },
+      {
+        "id": "PAY_2",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.056
+      },
+      {
+        "id": "PAY_6",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.057
+      },
+      {
+        "id": "BILL_AMT3",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.064
+      },
+      {
+        "id": "PAY_0",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.056
+      },
+      {
+        "id": "MARRIAGE",
+        "node_type": "proxy",
+        "pc": 0.0165,
+        "pu": 0.032
+      },
+      {
+        "id": "LIMIT_BAL",
+        "node_type": "proxy",
+        "pc": 0.0106,
+        "pu": 0.048
+      },
+      {
+        "id": "PAY_5",
+        "node_type": "proxy",
+        "pc": 0.0334,
+        "pu": 0.026
+      },
+      {
+        "id": "PAY_AMT3",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.08
+      },
+      {
+        "id": "PAY_AMT4",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.08
+      },
+      {
+        "id": "PAY_3",
+        "node_type": "proxy",
+        "pc": 0.0,
+        "pu": 0.08
+      }
+    ],
+    "edges": [
+      {
+        "source": "SEX",
+        "target": "EDUCATION",
+        "weight": 0.0264,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "SEX",
+        "target": "PAY_AMT1",
+        "weight": 0.1358,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "SEX",
+        "target": "PAY_AMT6",
+        "weight": 0.0623,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "SEX",
+        "target": "MARRIAGE",
+        "weight": 0.0165,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "SEX",
+        "target": "LIMIT_BAL",
+        "weight": 0.0106,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "SEX",
+        "target": "PAY_5",
+        "weight": 0.0334,
+        "edge_type": "capacity"
+      },
+      {
+        "source": "PAY_AMT5",
+        "target": "DECISION",
+        "weight": 0.056,
+        "edge_type": "use"
+      },
+      {
+        "source": "EDUCATION",
+        "target": "DECISION",
+        "weight": 0.066,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_AMT1",
+        "target": "DECISION",
+        "weight": 0.056,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_AMT6",
+        "target": "DECISION",
+        "weight": 0.072,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_2",
+        "target": "DECISION",
+        "weight": 0.056,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_6",
+        "target": "DECISION",
+        "weight": 0.057,
+        "edge_type": "use"
+      },
+      {
+        "source": "BILL_AMT3",
+        "target": "DECISION",
+        "weight": 0.064,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_0",
+        "target": "DECISION",
+        "weight": 0.056,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_AMT3",
+        "target": "DECISION",
+        "weight": 0.08,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_AMT4",
+        "target": "DECISION",
+        "weight": 0.08,
+        "edge_type": "use"
+      },
+      {
+        "source": "PAY_3",
+        "target": "DECISION",
+        "weight": 0.08,
+        "edge_type": "use"
+      }
+    ]
+  },
+  "proxy_paths": [
+    [
+      "SEX",
+      "EDUCATION",
+      "DECISION"
+    ],
+    [
+      "SEX",
+      "PAY_AMT1",
+      "DECISION"
+    ],
+    [
+      "SEX",
+      "PAY_AMT6",
+      "DECISION"
+    ]
+  ],
+  "proxy_ascii": "SEX\n  \u2500[capacity=0.0264]\u2500\u25ba EDUCATION\u2500[use=0.066]\u2500\u25ba DECISION\n  \u2500[capacity=0.1358]\u2500\u25ba PAY_AMT1\u2500[use=0.056]\u2500\u25ba DECISION\n  \u2500[capacity=0.0623]\u2500\u25ba PAY_AMT6\u2500[use=0.072]\u2500\u25ba DECISION",
+  "risk_summary": [
+    {
+      "feature": "PAY_AMT1",
+      "proxy_capacity": 0.1358,
+      "proxy_use": 0.056,
+      "proxy_risk": 0.0076
+    },
+    {
+      "feature": "PAY_AMT6",
+      "proxy_capacity": 0.0623,
+      "proxy_use": 0.072,
+      "proxy_risk": 0.0045
+    },
+    {
+      "feature": "EDUCATION",
+      "proxy_capacity": 0.0264,
+      "proxy_use": 0.066,
+      "proxy_risk": 0.0017
+    },
+    {
+      "feature": "PAY_5",
+      "proxy_capacity": 0.0334,
+      "proxy_use": 0.026,
+      "proxy_risk": 0.0009
+    },
+    {
+      "feature": "MARRIAGE",
+      "proxy_capacity": 0.0165,
+      "proxy_use": 0.032,
+      "proxy_risk": 0.0005
+    },
+    {
+      "feature": "LIMIT_BAL",
+      "proxy_capacity": 0.0106,
+      "proxy_use": 0.048,
+      "proxy_risk": 0.0005
+    },
+    {
+      "feature": "AGE",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.025,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_0",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.056,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_2",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.056,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_3",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.08,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_4",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.048,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_6",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.057,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "BILL_AMT1",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.04,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "BILL_AMT2",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.041,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "BILL_AMT3",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.064,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "BILL_AMT4",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.056,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "BILL_AMT5",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.048,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "BILL_AMT6",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.056,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_AMT2",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.048,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_AMT3",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.08,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_AMT4",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.08,
+      "proxy_risk": 0.0
+    },
+    {
+      "feature": "PAY_AMT5",
+      "proxy_capacity": 0.0,
+      "proxy_use": 0.056,
+      "proxy_risk": 0.0
+    }
+  ],
+  "interaction_summary": [
+    {
+      "feature_i": "PAY_AMT1",
+      "feature_j": "PAY_AMT6",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_AMT1",
+      "feature_j": "EDUCATION",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_AMT1",
+      "feature_j": "PAY_5",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_AMT1",
+      "feature_j": "MARRIAGE",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_AMT6",
+      "feature_j": "EDUCATION",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_AMT6",
+      "feature_j": "PAY_5",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_AMT6",
+      "feature_j": "MARRIAGE",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "EDUCATION",
+      "feature_j": "PAY_5",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "EDUCATION",
+      "feature_j": "MARRIAGE",
+      "interaction": 0.0
+    },
+    {
+      "feature_i": "PAY_5",
+      "feature_j": "MARRIAGE",
+      "interaction": 0.0
+    }
+  ],
+  "baseline_fairness": {
+    "du": 0.088,
+    "sp": 0.04,
+    "eod": 0.088,
+    "pp": 0.0229,
+    "abroca": 0.0,
+    "ti": 0.1655,
+    "mean_score": 0.708,
+    "mean_score_protected": 0.724,
+    "mean_score_non_protected": 0.692,
+    "n_protected": 50,
+    "n_non_protected": 50
+  },
+  "mitigation_results": [
+    {
+      "strategy": "masking",
+      "fairness": {
+        "du": 0.073,
+        "sp": 0.04,
+        "eod": 0.2066,
+        "pp": 0.0497,
+        "abroca": 0.0,
+        "ti": 0.1804,
+        "mean_score": 0.693,
+        "mean_score_protected": 0.71,
+        "mean_score_non_protected": 0.676,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": 0.015,
+        "\u0394sp": 0.0,
+        "\u0394eod": -0.1186,
+        "\u0394pp": -0.0268,
+        "\u0394abroca": 0.0,
+        "\u0394ti": -0.015
+      }
+    },
+    {
+      "strategy": "filtering",
+      "fairness": {
+        "du": 0.086,
+        "sp": 0.06,
+        "eod": 0.1123,
+        "pp": 0.0205,
+        "abroca": 0.0,
+        "ti": 0.145,
+        "mean_score": 0.73,
+        "mean_score_protected": 0.758,
+        "mean_score_non_protected": 0.702,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": 0.002,
+        "\u0394sp": -0.02,
+        "\u0394eod": -0.0243,
+        "\u0394pp": 0.0023,
+        "\u0394abroca": 0.0,
+        "\u0394ti": 0.0205
+      }
+    },
+    {
+      "strategy": "fair_prompt",
+      "fairness": {
+        "du": 0.101,
+        "sp": 0.0,
+        "eod": 0.1766,
+        "pp": 0.0476,
+        "abroca": 0.0,
+        "ti": 0.108,
+        "mean_score": 0.773,
+        "mean_score_protected": 0.772,
+        "mean_score_non_protected": 0.774,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": -0.013,
+        "\u0394sp": 0.04,
+        "\u0394eod": -0.0886,
+        "\u0394pp": -0.0247,
+        "\u0394abroca": 0.0,
+        "\u0394ti": 0.0575
+      }
+    },
+    {
+      "strategy": "few_shot_fair",
+      "fairness": {
+        "du": 0.25,
+        "sp": 0.06,
+        "eod": 0.4045,
+        "pp": 0.0808,
+        "abroca": 0.0,
+        "ti": 0.2057,
+        "mean_score": 0.592,
+        "mean_score_protected": 0.622,
+        "mean_score_non_protected": 0.562,
+        "n_protected": 50,
+        "n_non_protected": 50
+      },
+      "improvement": {
+        "\u0394du": -0.162,
+        "\u0394sp": -0.02,
+        "\u0394eod": -0.3165,
+        "\u0394pp": -0.0579,
+        "\u0394abroca": 0.0,
+        "\u0394ti": -0.0402
+      }
+    }
+  ]
+}
