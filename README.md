@@ -9,6 +9,9 @@ VAYNE is a black-box framework that audits Large Language Models (LLMs) used as 
 
 This repository contains the experiment code behind the VAYNE paper.
 
+![VAYNE framework overview](fig_overview.png)
+*LLM scoring → utility-qualified baseline fairness → Direct Unfairness via protected-attribute masking → Proxy Risk analysis (Proxy Capacity × Proxy Use → Proxy Path Graph) → mitigation.*
+
 ## How it works
 
 For a black-box scorer `s(x) = p_yes(x) ∈ [0,1]` over a tabular record `x = (a, x_1, ..., x_d)` with protected attribute `A` and non-protected features `X_j`:
@@ -21,6 +24,9 @@ For a black-box scorer `s(x) = p_yes(x) ∈ [0,1]` over a tabular record `x = (a
 | **PRS_j** (Proxy Risk Score) | `PC_j × PU_j` | High only when a feature both *encodes* protected info **and** the model *uses* it — the dangerous case. |
 
 `x_{-A}` / `x_{-j}` denote the record with the protected attribute / feature `j` replaced by the sentinel `UNKNOWN`, keeping the rest of the prompt structure intact.
+
+![Direct Unfairness score example](fig_direct_unfairness_score_example.png)
+*Worked example: the same three records are scored once with `sex` intact and once with `sex` masked to `UNKNOWN`. `DU_A` is the mean absolute difference between the two score columns.*
 
 Features ranked by `PRS_j` are assembled into a **Proxy Path Graph** — a directed graph `A → X_j → Decision` where a capacity edge is added when `PC_j > τ₁` and a use edge when `PU_j > τ₂` (adaptive percentile thresholds, see `GRAPH_THRESHOLD_PERCENTILE` in `src/config.py`). A complete `A → X_j → Decision` path is the visual signature of proxy-mediated unfairness.
 
@@ -145,9 +151,24 @@ For each `(dataset, model)` experiment, `src/reporting.py::save_results()` write
 - `{dataset}__{model}_proxy_risk.csv`, `_interactions.csv`, `_mitigation.csv`
 - `fig_{dataset}_proxy_risk.png`, `_pc_pu_scatter.png`, `_mitigation_heatmap.png`, `_proxy_bar_plot.png`, `_proxy_graph.png` — figures are named by dataset only (no model tag, no title baked in — for figure captions in a paper).
 
+### Example output (`german_credit`)
+
+<table>
+<tr>
+<td><img src="result_0107/fig_german_credit_proxy_risk.png" alt="Proxy risk bar chart"></td>
+<td><img src="result_0107/fig_german_credit_pc_pu_scatter.png" alt="PC vs PU scatter"></td>
+</tr>
+<tr>
+<td><img src="result_0107/fig_german_credit_proxy_bar_plot.png" alt="Proxy Use bar plot"></td>
+<td><img src="result_0107/fig_german_credit_mitigation_heatmap.png" alt="Mitigation heatmap"></td>
+</tr>
+</table>
+
+![Proxy Path Graph](result_0107/fig_german_credit_proxy_graph.png)
+
 ## Notes
 
-- `.gitignore` currently excludes `*.md` and `*.sh` repo-wide — if you want this README (or `setup.sh`) tracked in git, add an explicit negation (`!README.md`) to `.gitignore`.
+- `.gitignore` still excludes `*.sh` repo-wide — if you want `setup.sh` tracked in git, add an explicit negation (`!setup.sh`).
 - There is no `LICENSE` file yet.
 
 <!-- ## Citation
